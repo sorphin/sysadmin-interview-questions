@@ -43,9 +43,9 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
    - I was reading about differences types of encryption, and their usage, when use an asymmetric key or a symmetric key and what are the limits and applications of GCP when need to encrypt backups for example. 
 
 * Talk about your preferred development/administration environment. (OS, Editor, Browsers, Tools, etc.)
-  - OS - Linux
-    editor - Vscode
-    Browser- chromium/firefox 
+  - OS - Linux/MacOS
+    editor - Vscode/Cursor
+    Browser- chromium/firefox
     tools - terraform, vim, git, ZSH, ohmyzsh, Python, ansible, terminator, packer, meld, helm, kubectl, aws tools, kubetail, eksctl
     distro - Arch Linux
     environment - i3wm + lxde
@@ -83,8 +83,8 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
 
 * Describe the most common HTTP methods/verbs, and give examples:
   - GET - Read only operation, used to fetch detail from the server, downloads
-  - POST - This method is used for the creationg of new resources on the server
-  - PUT - This method is used to update existing resource on the server or to replace the resource, PUT it's indepotent, and POST isn't, with PUT you can update a resource N times, but if you try with post you will create N resources. PUT can create resources.
+  - POST - This method is used to create new resources on the server
+  - PUT - This method is used to update existing resource on the server or to replace the resource, PUT it's indepotent, and POST isn't, with PUT you can update a resource N times, but if you try with post you will create N resources. PUT can create resources, if doesn't exists.
   - PATCH - Applies a partial update to a resource and doesn't create a new resource
   - DELETE - This method is used to delete the resource on the server
   - TRACE - Provides a loop back test along the path to the target resource providing a useful debugging mechanism.
@@ -189,7 +189,7 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
 * How to add/remove a group from a user?
   - usermod -a -G groupname username #to add a user in a new group
   - usermod -G [all groups that you want the user into] username #You don't remove the user from a group, you add the user in all groups that this user is suppose to be.
-  - newgrp <GroupName> - Updates shell session with new group permissions
+  - newgrp <GroupName> - Updates shell session with new group permissions, important when installing docker for example.
 
 * What is a bash alias?
   - It's a shortcut for some bash command
@@ -239,7 +239,7 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
   - awk it's a programming language designed for text processing.
 
  * ```tr```
-   - tr or translate, it's a command to substitute characters.
+   - tr or translate, it's a command to replace characters.
 
  * ```cut```
    - cut is a command for text processing and extracts a portion of a text
@@ -460,6 +460,11 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
   - `..` - `cd ..`
   - `...` - `cd ../..`
   - `....` - `cd ../../../`
+  - `gst` - `git status`
+  - `gsta` - `git statsh add`
+  - `gstp` - `git statsh pop`
+  - `gcm` - `git commit -am `
+  - `gcb` - `git branch`
 
 * What is the Linux Standard Base?
   - It's a joint project projected by several Linux distributions under the organizational structure of the Linux Foundation to standardize the sofware system structure, including filesystem hierarchy.
@@ -469,6 +474,7 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
 
 * Your freshly configured HTTP server is not running after a restart, what can you do?
   - I would try to see the logs and check what's the problem. `jounalctl -xe` `systemctl status httpd`
+  - Check user permissions
 
 * What kind of keys are in ~/.ssh/authorized_keys and what it is this file used for?
   - Public keys, they are used to authenticate users in the server.
@@ -639,7 +645,7 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
   - Installing the dev or devel version of the lib, that will contain the source code to be compiled 
 
 * What are the advantages/disadvantages of script vs compiled program?
-  - Scripts are easy to correct and see how works, compiled are much faster
+  - Scripts are easy to correct and see how works, compiled are much faster since they are in binary and need to be recompiled to change the source code.
 
 * What's the relationship between continuous delivery and DevOps?
   - Continous delivery it's one subject inside the DevOps methodology, this subject explain and show us how to delivery sofware or services fast, without human intervention.
@@ -682,12 +688,12 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
   - FIve nines measure the 99,999% of availability of a service, meaning that service can be only offline 5.26 minutes in a year.
 
 * What would be the good SLI for an API service? How would you use an SLI to meet the SLO?
-  - User latency, error rate are good SLI. Every indicator that measures the user experience it can be a good. Based in the SLI you can change, improve the system or process to follow the SLO.
+  - User latency, error rate are good SLIs. Any indicator that measures the user experience it can be a good. Based in the SLI you can change, improve the system or process to follow the SLO.
 
 * What are the SRE Signals?
   - Latency: Or response time, it's the time taken to serve a request. The increase of latency it's key indicator of degradation in an aplication. 
   - Traffic: It's the number of requests flowing across your network. Monitoring traffic can help to identify capacity problems and plan ahead future demand.
-  - Errors Rate: Indicates the rate of requests that fail, it's  important to know when your application it's running with errors, and if they are increasing.
+  - Errors Rate: Indicates the rate of requests that fail, it's important to know when your application it's running with errors, and if they are increasing.
   - Saturation: Measures the usage of a service, and how health is it. CPU, Memory, IO are good metrics, increase of latency it's often a saturation issue.
 
 * True or false, you should always aim to make your service as reliable as it can possibly be?
@@ -702,9 +708,10 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
 * Describe a simple approach to efficient manage container resources K8S cluster
   - In the pod or deployment specification you can set `limits` for that container or `requests`
   - Seting a request for Containers in a pod, the scheduler it will use this information to decide which node to run that container, the container can if needed use more resource than what it was set in the request.
-  - Setting a limit it will limit the container to use maximum that amount of memory or CPU cycles, this is enforced by the kubelet the container. If only limits is set the kube scheduler it will set the request that matches the limit.
-  - When a process tries to use more than the allowed amount of memory the system kernel terminates the process with a OOM Error ( out of memory ) 
+  - Setting a limit resource it will limit the POD to use the maximum set of memory or CPU cycles, this is enforced by the kubelet the container. If only limits is set the kube scheduler it will set the request that matches the limit.
+  - When a process tries to use more than the allowed amount of memory the system kernel terminates the process with a OOM Error ( out of memory )
   - Configure a HPA
+  - You can set a namespace limit range, to limit the amount of resources used by a specific namespace.
 
 * What are the layers in Docker and why are they useful?
   - Docker layer it's a file generated from running some command during a docker build, and be accessed in the docker host `/var/lib/docker/aufs/diff`, they can be used as cache.
@@ -726,10 +733,10 @@ A collection of Linux sysadmin/Devops interview questions. Feel free to contribu
     - Running: The Pod has been bound to a node, and all of the containers have been created.
     - Suceeded: All containers in the Pod have terminated in success, and will not be restarted.
     - Failed: All containers in the Pod have terminated, and at least one conetainer has terminated in failure. That is the container either exited with non-zero status or was terminated by the system.
-    - Unknown: For some readon the state of the Pod could not be obtained. This phase typically occurs dut to an error in communicating with the node where the Pod should be running.
+    - Unknown: For some reason the state of the Pod could not be obtained. This phase typically occurs dut to an error in communicating with the node where the Pod should be running.
 
 * What are three types of handlers to perform a diagnostic by Kubernetes engine?
-  - A probe is a diagnostic performed by the kubelet on a Container, to diagnost the kubelet calls a handler implemented by the container.
+  - A probe is a diagnostic performed by the kubelet on a Container, to diagnose the kubelet calls a handler implemented by the container.
   - ExecAction: Executes a specified command inside the container. The diagnostic is considered successful if the command exits with a status code of 0.
   - TCPSocketAction: Performs a TCP check agains the Pod's IP address on a specific port. The diagnostic is considered successful if the command the port is open.
   - HTTPGetAction: Performs an HTTP GET request against the Pod's IP address on a specified port and path. The Diagnostic is considered succesful if the response has a status code greater or equal to 200 and less than 400.
@@ -761,7 +768,7 @@ deployment and scaling guarantees like deploy and termination order.
   - Kube-scheduler is a control plane process which assigns Pods to Nodes and determines which nodes are valid placements for a Pod in the schedule queue according to constaints and available resources. Multiple different schedules can be used in a cluster, and kube-scheduler is the reference implementation.
   - Kubernetes API Server validates and configures data for the API objects which includes pods, services, replicationcontrollers and others. The api server services REST operations and provides frontend to the cluster shared state.
   - Kube-proxy it's  the kubernetes network proxy that runs in each node, this reflects services as defined in the Kubernetes API on each nod and can do simple TCP, UDP and SCTP( Service Transmission Control Protocol) fowarding accross a set of backends.
-  - The kubernetes controller manager is a deamon that embeds the core control loop, it's a non terminating loop that regualtes the state of the system. In Kubernetes the control loop that watches the shared state of the cluster through the apiserver and endpoints controller, namespace controller and serviceaccount controller.
+  - The kubernetes controller manager is a daemon that embeds the core control loop, it's a non terminating loop that regualtes the state of the system. In Kubernetes the control loop that watches the shared state of the cluster through the apiserver and endpoints controller, namespace controller and serviceaccount controller.
 
 
 * Explain the role of CRD (Custom Resource Definition) in K8?
